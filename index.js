@@ -127,13 +127,14 @@ app.post("/post", async function (request, response) {
     .insertOne(itemdata);
   response.send(postdata);
 });
-app.delete("/pageitem/delete/:id", async function (request, response) {
-  const { id } = request.params;
+app.delete("/pageitem/deleteitem/:deleteid", async function (request, response) {
+  const { deleteid } = request.params;
   const item = await client
     .db("rentalshop")
     .collection("pageitems")
-    .deleteOne({ prodect_id: id });
+    .deleteOne({ prodect_id: deleteid});
   response.send(item);
+  console.log(deleteid)
 });
 app.put("/useritem/delete/:id/:user_id", async function (request, response) {
   const { id, user_id } = request.params;
