@@ -8,6 +8,7 @@ dotenv.config();
 import { auth } from "./middleware/auth.js";
 import shortid from "shortid";
 import Razorpay from "razorpay";
+
 // const shortids = shortid()
 // const Razorpaye = Razorpay();
 // import shortid from "shortid";
@@ -111,30 +112,36 @@ app.get("/user/post/items/:id", async function (request, response) {
 
 app.post("/post", async function (request, response) {
   const ddd = request.body;
+  // const NO_OF_ROUNDS = 2;
+  // const salt = await bcrypt.genSalt(NO_OF_ROUNDS);
+  // const hashedPassword = await bcrypt.hash(ddd.Name, salt);
   // console.log(ddd)
-  const productid = jwt.sign({ name: ddd.Name }, process.env.SECRET_KEY);
-  // console.log(ddd)
-  const itemdata = {
-    Name: ddd.Name,
-    img: ddd.img,
-    discription: ddd.discription,
-    rental: ddd.rental,
-    prodect_id: productid,
-  };
-  const postdata = await client
+  // const productid = jwt.sign({ name: ddd.Name }, process.env.SECRET_KEY);
+
+  // console.log(ddd);
+  // const itemdata = {
+  //   Name: ddd.Name,
+  //   img: ddd.img,
+  //   discription: ddd.discription,
+  //   rental: ddd.rental,
+  //   prodect_id: productid,
+  // };
+  const postdata2 = await client
     .db("rentalshop")
     .collection("pageitems")
-    .insertOne(itemdata);
-  response.send(postdata);
+    .insertOne(ddd);
+
+  response.send(postdata2);
 });
-app.delete("/pageitem/deleteitem/:deleteid", async function (request, response) {
-  const { deleteid } = request.params;
+app.delete("/pageitem/deleteitem/:id", async function (request, response) {
+  const { id } = request.params;
   const item = await client
     .db("rentalshop")
     .collection("pageitems")
-    .deleteOne({ prodect_id: deleteid});
+    .deleteOne({ prodect_id: id });
   response.send(item);
-  console.log(deleteid)
+  console.log(id);
+  console.log(item);
 });
 app.put("/useritem/delete/:id/:user_id", async function (request, response) {
   const { id, user_id } = request.params;
@@ -162,18 +169,25 @@ app.put("/post/user/item/:id", async function (request, response) {
   const ddd = request.body;
   const { id } = request.params;
   const productid = jwt.sign({ name: ddd.Name }, process.env.SECRET_KEY);
-  // console.log(ddd)
-  const itemdata = {
-    Name: ddd.Name,
-    img: ddd.img,
-    discription: ddd.discription,
-    rental: ddd.rental,
-    prodect_id: productid,
-  };
+
+  // const itemdata = {
+  //   Name: ddd.Name,
+  //   img: ddd.img,
+  //   discription: ddd.discription,
+  //   rental: ddd.rental,
+  //   prodect_id: productid,
+  // };
+
   const postdata = await client
     .db("rentalshop")
     .collection("rendal_shop_user")
-    .updateOne({ usertoken: id }, { $push: { post: itemdata } });
+    .updateOne({ usertoken: id }, { $push: { post: ddd  } });
+  // const postdata2 = await client
+  // .db("rentalshop")
+  // .collection("pageitems")
+  // .findOne({});
+
+  // console.log(ddd)
   response.send(postdata);
 });
 app.put("/order/user/item/:id/:productid", async function (request, response) {
